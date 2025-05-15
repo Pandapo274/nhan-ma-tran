@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Matrix Multiply App</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    background: #1e1e2f;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #7fffd4;
+  }
+  textarea {
+    width: 200px;
+    height: 100px;
+    font-family: monospace;
+    font-size: 16px;
+    margin: 10px;
+    background: #333;
+    color: #eee;
+    border: 1px solid #7fffd4;
+    border-radius: 5px;
+    resize: none;
+    padding: 8px;
+  }
+  button {
+    background: #7fffd4;
+    border: none;
+    padding: 10px 20px;
+    margin: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #111;
+  }
+  .result {
+    margin-top: 20px;
+    font-family: monospace;
+    white-space: pre;
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 200px;
+  }
+  .instruction {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 10px;
+    max-width: 500px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Phép nhân ma trận 🤓</h1>
+<div class="instruction">
+  Nhập ma trận dưới dạng số cách nhau bằng dấu cách hoặc tab, mỗi dòng một hàng. Ví dụ:<br>
+  <code>1 2 3<br>4 5 6</code> là ma trận 2x3
+</div>
+
+<textarea id="matrixA" placeholder="Nhập ma trận A..."></textarea>
+<textarea id="matrixB" placeholder="Nhập ma trận B..."></textarea>
+
+<button onclick="multiplyMatrices()">Nhân ma trận</button>
+
+<div class="result" id="result"></div>
+
+<script>
+function parseMatrix(text) {
+  // tách dòng
+  const rows = text.trim().split('\n');
+  return rows.map(row => 
+    row.trim().split(/\s+/).map(Number)
+  );
+}
+
+function multiplyMatrices() {
+  const A = parseMatrix(document.getElementById('matrixA').value);
+  const B = parseMatrix(document.getElementById('matrixB').value);
+
+  // check kích thước để nhân được
+  if (A[0].length !== B.length) {
+    document.getElementById('result').textContent = 
+      '❌ Lỗi: Số cột của A phải bằng số dòng của B mới nhân được nha!';
+    return;
+  }
+
+  // tạo ma trận kết quả C (m x p)
+  const m = A.length;
+  const n = B.length; // cũng là số cột A
+  const p = B[0].length;
+  let C = new Array(m).fill(null).map(() => new Array(p).fill(0));
+
+  // nhân ma trận
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < p; j++) {
+      for (let k = 0; k < n; k++) {
+        C[i][j] += A[i][k] * B[k][j];
+      }
+    }
+  }
+
+  // format kết quả thành string
+  const resultStr = C.map(row => row.join('\t')).join('\n');
+  document.getElementById('result').textContent = 'Kết quả ma trận C:\n' + resultStr;
+}
+</script>
+
+</body>
+</html>
